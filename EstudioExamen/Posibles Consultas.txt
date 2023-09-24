@@ -1,0 +1,144 @@
+Preguntas agrupadas por dificultad (asignada bajo criterio propio asi que es solo orientativo)
+Los comentarios (**) son o ejemplos para especificar un poco más a que me refiero o aclaraciones 
+sobre la pregunta que aparecen en el esquema del sql.
+
+DIFICULTAD 1/5
+
+Unidades de enterramiento en las que se han realizado más de 2 inhumaciones
+-Salida: ref (debido a los values de la base de datos la salida es una tabla vacia, solo es un ejemplo)
+
+-Solucion: SELECT U.ref
+		 FROM Unidad U NATURAL JOIN Persona P
+		 GROUP BY U.ref
+		 HAVING COUNT(*)>2;
+
+          SELECT distinct U.ref
+		FROM Unidad U,Persona P1,Persona P2
+		WHERE U.ref=P1.ref AND U.ref=P2.ref AND P1;
+
+Personas que son beneficiarios y titulares (no necesariamente del mismo titulo)
+-Salida: dni, nombre
+
+-Solucion: SELECT distinct P.dni,P.nombre
+           FROM Persona P 
+           WHERE P.dni IN(SELECT B.dnit
+					 FROM Beneficiario B) AND P.dni IN(SELECT B2.dniB
+                                                            FROM Beneficiario B2);
+
+
+DIFICULTAD 2/5
+
+Persona ya fallecida con el maximo número de titularidades a lo largo de su vida.
+**Se entiende como persona fallecida a una persona que ha sido inhumada
+-Salida: dni, numconcesiones
+
+-Solucion: WITH numCPers AS(SELECT P.dni, count(C.ref) AS numConcesiones
+				 FROM Unidad U NATURAL JOIN Persona P, Concesion C
+				 WHERE C.dni=P.dni
+				 GROUP BY P.dni)
+		 SELECT NCP.dni,NCP.numConcesiones
+		 FROM numCPers NCP
+		 WHERE NCP.numConcesiones>=ALL(SELECT NCP2.numConcesiones 
+							  	 FROM numCPers NCP2)
+
+Tipo de unidad de enterramiento con el mayor número de capacidad media.
+-Salida: tipo, capacidadmedia
+**Ejemplo: si solo tengo 2 capillas en todo el cementerio, una con capacidad 10 y otra con capacidad 5,
+entonces las capacidad media de Capilla es de 7.5
+
+-Solucion: SELECT U.tipo,avg(U.capacidad) as capacidadmedia
+           FROM Unidad U
+           GROUP BY U.tipo
+           HAVING avg(U.capacidad)>=ALL(SELECT avg(U2.capacidad)
+							     FROM Unidad U2
+							     GROUP BY U2.tipo);
+
+Persona con el maximo numero de titularidades vigentes.
+-Salida: dni, numconcesiones
+
+-Solucion: WITH concesionesV AS(SELECT C.dni,C.ref
+				            FROM Concesion C
+				            WHERE C.ffin>CURRENT_DATE AND C.fini<=CURRENT_DATE)
+
+		SELECT CV.dni, count(*) as numconcesiones
+		FROM concesionesV CV
+		GROUP BY CV.dni
+		HAVING COUNT(*)>= ALL(SELECT count(*)
+					  	  FROM concesionesV CV2
+					       GROUP BY CV2.dni);
+
+
+
+DIFICULTAD 3/5
+
+
+Unidad de enterramiento con la concesion que haya sido traspasada el mayor número de veces
+-Salida: ref, numtraspasos
+**Una concesion es traspasada cuando hay dos entradas en la tabla concesion con la misma unidad de enterramiento en las que 
+la fecha de ffin de la primera es 1 dia antes que la fini de la segunda
+
+-Solucion: WITH unidadTras AS(SELECT U.ref, count(*) as numtraspasos
+				  FROM Unidad U NATURAL JOIN Concesion C,ConCesion C2
+				  WHERE C2.ref=C.ref AND (DATE_PART('day',C2.fini)-DATE_PART('day',C.ffin))=1
+				  GROUP BY U.ref)
+
+		 SELECT UT.ref, UT.numtraspasos
+		 FROM unidadTras UT
+		 WHERE UT.numtraspasos>=ALL(SELECT UT2.numtraspasos
+					  		   FROM unidadTras UT2); 
+---
+Como parte de la primera, se puede hacer la siguiente consulta:
+
+Numero de traspasos que se han hecho en concesiones de cada unidad de enterramiento
+-Salida: ref, numtraspasos
+**Ejemplo: la unidad 'e41' tendria 2 traspasos, mientas que la unidad 'v41', a pesar de que hay 3 entradas en la tabla concesion
+solo tendría 1 traspaso, ya que la primera y la segunda entrada son concesiones diferentes.
+
+-Solucion: SELECT U.ref, count(*) as numtraspasos
+		 FROM Unidad U NATURAL JOIN Concesion C,ConCesion C2
+		 WHERE C2.ref=C.ref AND (DATE_PART('day',C2.fini)-DATE_PART('day',C.ffin))=1
+		 GROUP BY U.ref;
+
+Unidades de enterramiento disponibles para inhumación
+-Salida: ref
+**Para que una unidad de enterramiento este disponible, tiene que no estar llena y
+no estar en obras
+
+-Solucion:  WITH numEnterramientos AS(SELECT U.ref,count(*) as numenterramientos
+						  FROM Unidad U NATURAL JOIN Persona P
+						  GROUP BY U.ref)
+		  SELECT U.ref
+		  FROM Unidad U NATURAL JOIN numEnterramientos NE
+		  WHERE NE.numenterramientos<U.capacidad AND U.obras is null;
+
+
+Personas que fueron inhumadas en dias más cercanos (sin ser el mismo dia)
+-Salida: dni1, dni2
+
+-Solucion(no se hacer que sno sean simetricas): SELECT P1.dni,P2.dni
+		 							   FROM Persona P1, Persona P2
+									   WHERE DATE_PART('day',P1.fuso)-DATE_PART('day',P2.fuso)>1 
+                                                AND DATE_PART('day',P1.fuso)-DATE_PART('day',P2.fuso)<=15;
+
+
+DIFICULTAD 4/5 (no estoy seguro de que tan bien estan planteadas estas consultas)
+
+Asignaciones de beneficiario que se hicieron fuera del plazo de vigencia de alguna concesion del titular.
+**Es decir, que si el titular Pepito designo a Pepe como beneficiario el 13-06-2017, en ese fecha Pepito no
+tiene que tener ninguna concesion vigente para aparecer en este tabla.
+-Salida: dniT, dniB, fini
+
+-Solucion: SELECT B.dnit,B.dnib,B.fini
+	      FROM Persona P NATURAL JOIN Concesion C,Beneficiario B
+		 WHERE P.dni=B.dnit AND B.fini>C.ffin;
+
+
+DIFICULTAD 5/5
+
+Asignaciones de beneficiario que se hicieron fuera del plazo de vigencia de alguna concesion del titular para titulares 
+que tienen al menos 1 concesion, sin usar agrupaciones ni agregaciones.
+-Salida: dniT, dniB, fini
+
+-Solucion: SELECT B.dnit,B.dnib,B.fini
+	      FROM Persona P NATURAL JOIN Concesion C,Beneficiario B
+		 WHERE P.dni=B.dnit AND B.fini>C.ffin;

@@ -1,0 +1,186 @@
+-- Cementerio Palencia: esquema modificado para examen ADBD 2022-23
+
+drop table if exists Beneficiario;
+drop table if exists Concesion;
+drop table if exists Persona;
+drop table if exists Unidad;
+
+create table Unidad (
+        ref char(3),
+        tipo int not null,
+        capacidad int not null,
+        obras int,
+        primary key (ref) );
+
+create table Persona (
+        dni char(4),
+        nombre char(25) not null,
+        codpostal int not null,
+        ref char(3),
+        fuso date,
+        primary key (dni),
+        foreign key (ref) references Unidad(ref) );
+
+create table Concesion (
+        ref char(3),
+        dni char(4),
+        fini date,
+        ffin date not null,
+        primary key (ref,dni,fini),
+        foreign key (ref) references Unidad(ref),
+        foreign key (dni) references Persona(dni) );
+
+create table Beneficiario (
+        dniT char(4),
+        dniB char(4),
+        fini date,
+        ffin date not null,
+        primary key (dniT, dniB, fini),
+        foreign key (dniT) references Persona(dni),
+        foreign key (dniB) references Persona(dni) );
+
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('b70', 6, 1, NULL);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('e41', 7, 2, NULL);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('f12', 6, 1, 1);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('f66', 1, 1, NULL);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('g98', 5, 2, NULL);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('i16', 5, 3, NULL);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('i63', 7, 1, 1);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('j73', 2, 2, NULL);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('m10', 3, 3, NULL);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('n46', 7, 1, NULL);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('t20', 2, 1, NULL);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('t38', 4, 1, 1);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('t91', 2, 1, NULL);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('u36', 3, 2, NULL);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('u90', 4, 1, NULL);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('u91', 5, 1, NULL);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('v34', 4, 1, NULL);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('v41', 1, 3, NULL);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('y98', 7, 1, 1);
+INSERT INTO Unidad (ref, tipo, capacidad, obras) VALUES ('z98', 7, 4, NULL);
+
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('035d', 'Rutherford               ', 88612, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('039w', 'Rodriguez                ', 78082, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('180z', 'Douglas                  ', 85201, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('183o', 'Keefe                    ', 49080, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('185q', 'Strosin                  ', 27966, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('193i', 'Frami                    ', 94854, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('229i', 'Olson                    ', 43217, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('247o', 'Huel                     ', 29199, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('264y', 'Legros                   ', 50636, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('278g', 'McGlynn                  ', 92273, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('334d', 'Gottlieb                 ', 52721, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('346b', 'Kiehn                    ', 50370, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('403c', 'Kozey                    ', 47907, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('412b', 'Legros                   ', 21331, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('437g', 'Koch                     ', 40772, 'v41', '2010-09-23');
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('454j', 'Dietrich                 ', 83692, 'j73', '2020-11-09');
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('484h', 'Harber                   ', 51109, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('504q', 'Wiza                     ', 71908, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('505e', 'Hartmann                 ', 6809, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('523e', 'Brekke                   ', 1294, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('556i', 'Davis                    ', 11101, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('566c', 'White                    ', 96780, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('576k', 'Kunde                    ', 13480, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('582n', 'Sporer                   ', 37720, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('585u', 'Swaniawski               ', 12262, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('586b', 'Abernathy                ', 19853, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('593h', 'Koelpin                  ', 58911, 'z98', '2020-07-23');
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('648r', 'Koepp                    ', 2888, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('660u', 'Harber                   ', 64258, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('672p', 'Will                     ', 32667, 't38', '2011-01-05');
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('677g', 'Cummerata                ', 99099, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('689p', 'Davis                    ', 3740, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('696l', 'Anderson                 ', 57290, 'u90', '2022-04-05');
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('700p', 'Jones                    ', 75236, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('708c', 'Boehm                    ', 92975, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('727e', 'Abbott                   ', 11296, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('777a', 'Boehm                    ', 90302, 'i16', '2015-05-20');
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('789t', 'Gleichner                ', 5115, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('817l', 'Haag                     ', 40772, 'v41', '2009-12-30');
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('821r', 'Ankunding                ', 21390, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('824p', 'Abbott                   ', 83585, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('828u', 'Gerhold                  ', 16654, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('868d', 'Considine                ', 73116, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('876s', 'Nikolaus                 ', 3532, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('880h', 'Murray                   ', 41036, 'g98', '2018-09-23');
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('888c', 'Kovacek                  ', 40964, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('898i', 'Wisoky                   ', 33910, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('948z', 'Collins                  ', 91944, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('962y', 'Franecki                 ', 21772, NULL, NULL);
+INSERT INTO Persona (dni, nombre, codpostal, ref, fuso) VALUES ('972h', 'Bashirian                ', 77053, 'n46', '1990-04-01');
+
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('b70', '035d', '2007-09-06', '2027-10-06');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('e41', '828u', '1987-02-09', '1997-11-30');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('e41', '412b', '2001-03-09', '2017-04-12');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('e41', '585u', '2017-04-13', '2025-03-15');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('f66', '876s', '2003-09-28', '2033-10-28');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('g98', '880h', '2017-02-11', '2027-03-13');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('i16', '888c', '1976-11-16', '2003-10-16');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('i16', '972h', '2003-10-17', '2013-08-01');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('i16', '777a', '2013-08-02', '2018-01-07');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('i16', '403c', '2018-01-08', '2050-01-01');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('i63', '898i', '2006-09-07', '2019-02-28');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('j73', '948z', '1983-11-07', '1983-12-07');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('j73', '454j', '1983-12-08', '2021-08-29');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('m10', '962y', '1990-10-05', '2017-03-07');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('n46', '972h', '1990-03-24', '1990-04-23');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('t20', '824p', '1990-11-30', '1990-12-30');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('t20', '403c', '1990-12-31', '2040-03-11');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('t38', '828u', '1993-10-08', '2019-04-29');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('t91', '868d', '1972-10-11', '2008-11-12');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('t91', '229i', '2008-11-13', '2010-06-18');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('t91', '523e', '2010-06-19', '2014-12-01');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('t91', '229i', '2014-12-02', '2032-09-08');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('u36', '876s', '1999-05-21', '2100-05-09');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('u90', '880h', '1970-04-24', '1972-10-01');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('u90', '696l', '1972-10-02', '2050-09-16');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('u91', '888c', '2008-01-09', '2018-02-08');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('v34', '898i', '2022-06-29', '2022-07-29');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('v41', '948z', '2000-12-16', '2001-01-15');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('v41', '437g', '2002-04-25', '2017-01-01');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('v41', '821r', '2018-07-15', '2037-01-01');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('y98', '962y', '2011-06-23', '2031-07-23');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('z98', '972h', '2009-03-26', '2009-04-25');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('z98', '948z', '2009-04-26', '2019-11-02');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('z98', '593h', '2019-12-01', '2021-04-10');
+INSERT INTO Concesion (ref, dni, fini, ffin) VALUES ('z98', '700p', '2021-04-11', '2045-01-01');
+
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('035d', '789t', '2003-11-30', '2086-11-03');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('039w', '566c', '2012-11-04', '2019-05-20');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('183o', '582n', '2005-11-15', '2034-07-29');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('185q', '566c', '2008-01-20', '2073-02-27');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('229i', '828u', '1978-06-02', '2015-04-20');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('247o', '817l', '2003-09-24', '2032-09-21');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('403c', '035d', '2020-06-03', '2082-03-26');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('412b', '183o', '1978-02-21', '2095-01-27');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('437g', '817l', '1976-04-23', '2021-12-08');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('454j', '824p', '1975-11-30', '2032-07-03');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('484h', '334d', '1977-11-10', '2095-02-27');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('504q', '582n', '1983-09-27', '2032-09-19');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('523e', '898i', '1970-02-24', '2071-01-20');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('556i', '185q', '1974-12-30', '2036-09-01');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('585u', '789t', '2001-03-18', '2002-01-21');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('593h', '454j', '1978-07-15', '2034-04-21');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('648r', '689p', '2003-08-15', '2039-09-05');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('672p', '566c', '1981-03-26', '2037-12-08');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('677g', '582n', '1988-08-07', '2034-01-21');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('689p', '582n', '1989-10-29', '2078-02-09');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('696l', '868d', '1981-12-22', '2090-05-06');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('700p', '576k', '1975-09-07', '2072-05-15');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('777a', '484h', '1977-12-30', '2071-08-11');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('789t', '817l', '1987-01-12', '2037-10-16');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('817l', '183o', '1980-11-13', '2030-12-24');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('821r', '888c', '1984-03-06', '2077-11-14');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('824p', '888c', '1986-03-14', '2010-10-01');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('828u', '672p', '1984-09-04', '2084-03-21');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('868d', '180z', '1992-09-20', '2097-03-16');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('876s', '888c', '1982-06-13', '2032-08-15');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('880h', '696l', '1968-10-20', '2039-08-08');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('880h', '264y', '2000-10-20', '2029-08-08');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('888c', '824p', '1973-05-19', '2002-11-04');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('898i', '777a', '2019-03-21', '2038-02-28');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('948z', '868d', '2020-05-01', '2082-07-19');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('962y', '412b', '1992-09-07', '2031-02-21');
+INSERT INTO Beneficiario (dnit, dnib, fini, ffin) VALUES ('972h', '972h', '2008-08-01', '2081-08-05');
